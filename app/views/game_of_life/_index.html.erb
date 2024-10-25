@@ -2,17 +2,11 @@
 <p>Grid Size: <%= grid_size[:rows] %> x <%= grid_size[:cols] %></p>
 
 <table>
-  <% if grid %>
-    <% grid.each do |row| %>
-      <tr>
-        <% row.each do |cell| %>
-          <td><%= cell == '*' ? '🟩' : '⬜️' %></td>
-        <% end %>
-      </tr>
-    <% end %>
-  <% else %>
+  <% (1..generation).each do |gen| %>
     <tr>
-      <td colspan="3">No grid data available.</td>
+      <% grid.each do |row| %>
+        <td><%= row.join(' ') %></td>
+      <% end %>
     </tr>
   <% end %>
 </table>
