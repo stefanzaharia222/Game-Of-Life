@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of Life</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; margin-top: 20px; }
+        table td { width: 40px; height: 40px; text-align: center; font-size: 24px; }
+    </style>
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <h1>Game of Life</h1>
+
+    <div id="game_of_life">
+        <% if !defined?(@grid) || @grid.empty? %>
+            <%= form_with url: load_file_path, local: false do |form| %>
+                <%= form.file_field :generation_file %>
+                <%= form.submit 'Load File' %>
+            <% end %>
+        <% else %>
+            <p>Generation <%= @generation %></p>
+            <p>Grid Size: <%= @grid_size[:rows] %> x <%= @grid_size[:cols] %></p>
+
+            <table>
+                <% if @grid %>
+                    <% @grid.each do |row| %>
+                        <tr>
+                            <% row.each do |cell| %>
+                                <td><%= cell == '*' ? '🟩' : '⬜️' %></td>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                <% else %>
+                    <tr>
+                        <td colspan="3">No grid data available.</td>
+                    </tr>
+                <% end %>
+            </table>
+
+            <form action="/next_generation" method="POST">
+                <%= csrf_meta_tag %>
+                <input type="hidden" name="generation" value="<%= @generation %>">
+                <input type="hidden" name="gridSize" value="<%= @grid_size.to_json %>">
+                <input type="hidden" name="grid" value="<%= @grid.to_json %>">
+                <button type="submit">Calculate Next Generation</button>
+            </form>
+        <% end %>
+    </div>
+</body>
+</html>

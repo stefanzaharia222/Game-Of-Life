@@ -1,0 +1,2 @@
+module GameOfLifeHelper
+end
