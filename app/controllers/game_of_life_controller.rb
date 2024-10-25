@@ -22,6 +22,19 @@ class GameOfLifeController < ApplicationController
        Rails.logger.error "Parsed grid is empty or invalid"
        return redirect_to root_path, alert: 'Invalid grid format in file.'
      end
+ # Înlocuiește simbolurile
+     parsed_grid.map! do |row|
+       row.map! do |cell|
+         case cell
+         when '*'
+           '🌳'  # Celul vie
+         when '.'
+           '🌑'  # Celul moarte
+         else
+           cell  # Păstrează celulele neidentificate
+         end
+       end
+     end
 
      parsed_grid_size = { 'rows' => parsed_grid.length, 'cols' => parsed_grid.first.length }
 
@@ -70,16 +83,16 @@ class GameOfLifeController < ApplicationController
   private
 
 def get_next_generation(grid, grid_size)
-  new_grid = Array.new(grid_size['rows']) { Array.new(grid_size['cols'], '.') }
+  new_grid = Array.new(grid_size['rows']) { Array.new(grid_size['cols'], '🌑') }
 
   (0...grid_size['rows']).each do |row|
     (0...grid_size['cols']).each do |col|
       live_neighbors = count_live_neighbors(grid, row, col, grid_size)
 
-      if grid[row][col] == '*'  # Current cell is alive
-        new_grid[row][col] = '*' if live_neighbors.between?(2, 3)  # Stay alive
+      if grid[row][col] == '🌳'  # Current cell is alive
+        new_grid[row][col] = '🌳' if live_neighbors.between?(2, 3)  # Stay alive
       else  # Current cell is dead
-        new_grid[row][col] = '*' if live_neighbors == 3  # Become alive
+        new_grid[row][col] = '🌳' if live_neighbors == 3  # Become alive
       end
     end
   end
@@ -95,7 +108,7 @@ def count_live_neighbors(grid, row, col, grid_size)
     new_row = row + dx
     new_col = col + dy
     if new_row.between?(0, grid_size['rows'] - 1) && new_col.between?(0, grid_size['cols'] - 1)
-      live_count += 1 if grid[new_row][new_col] == '*'
+      live_count += 1 if grid[new_row][new_col] == '🌳'
     end
   end
 
