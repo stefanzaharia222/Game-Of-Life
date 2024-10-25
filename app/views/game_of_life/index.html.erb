@@ -5,43 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game of Life</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { border-collapse: collapse; margin-top: 20px; }
-        table td { width: 40px; height: 40px; text-align: center; font-size: 24px; }
+        /* Basic styling for the body and table */
+        body {
+            font-family: Arial, sans-serif; /* Set a clean and modern font */
+            background-color: #f9f9f9; /* Light background for better contrast */
+            margin: 0; /* Remove default margins */
+            padding: 20px; /* Add padding around the content */
+        }
+
+        table {
+            border-collapse: collapse; /* Ensure table borders collapse into a single border */
+            margin-top: 20px; /* Space above the table */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+        }
+
+        table td {
+            width: 40px; /* Fixed width for table cells */
+            height: 40px; /* Fixed height for table cells */
+            text-align: center; /* Center text in cells */
+            font-size: 24px; /* Increase font size for visibility */
+            border: 1px solid #ccc; /* Light border for table cells */
+            transition: background-color 0.3s; /* Smooth transition for background color changes */
+        }
+
+        /* Style for the hover effect */
+        table td:hover {
+            background-color: #e0e0e0; /* Light gray on hover for better UX */
+        }
     </style>
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json"> <!-- Link to the web app manifest -->
 </head>
 <body>
-<h1>Game of Life</h1>
+    <h1>Game of Life</h1>
 
-<%= form_with url: load_file_path, local: true, html: { multipart: true } do |form| %>
-  <div>
-    <%= form.label :generation_file, "Upload a file:" %>
-    <%= form.file_field :generation_file %>
-  </div>
-  <div>
-    <%= form.submit "Load File" %>
-  </div>
-<% end %>
-
-<h2>Current Generation: <%= session[:generation] %></h2>
-<table>
-  <thead>
-    <tr>
-      <th colspan="<%= session[:grid_size]['cols'] %>">Grid</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% session[:grid].each do |row| %>
-      <tr>
-        <% row.each do |cell| %>
-          <td><%= cell %></td>
-        <% end %>
-      </tr>
+    <!-- Form for uploading a file to load the initial grid -->
+    <%= form_with url: load_file_path, local: true, html: { multipart: true } do |form| %>
+      <div>
+        <%= form.label :generation_file, "Upload a file:" %> <!-- Label for the file input -->
+        <%= form.file_field :generation_file %> <!-- File input field for uploading a grid -->
+      </div>
+      <div>
+        <%= form.submit "Load File" %> <!-- Submit button for the form -->
+      </div>
     <% end %>
-  </tbody>
-</table>
 
-<%= button_to "Calculate Next Generation", next_generation_path, method: :post %>
+    <h2>Current Generation: <%= session[:generation] %></h2> <!-- Display the current generation number -->
+    <table>
+      <thead>
+        <tr>
+          <th colspan="<%= session[:grid_size]['cols'] %>">Grid</th> <!-- Table header for the grid -->
+        </tr>
+      </thead>
+      <tbody>
+        <% session[:grid].each do |row| %> <!-- Iterate over each row in the grid -->
+          <tr>
+            <% row.each do |cell| %> <!-- Iterate over each cell in the row -->
+              <td><%= cell %></td> <!-- Display the cell content -->
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <!-- Button to calculate the next generation -->
+    <%= button_to "Calculate Next Generation", next_generation_path, method: :post %>
 </body>
 </html>
